@@ -84,7 +84,7 @@ def menu ():
 	print ("1 - Download All Apps from Repo")
 	print ("2 - Upload All Apps to Repo")
 	print ("3 - File Comparison of Two Files")
-	print ("9 - Clean Configuration Files")
+	print ("9 - Setup/Clean Configuration Files")
 	print ("0 - Exit")
 	user_input = raw_input ("Choose an option: ")
 	
