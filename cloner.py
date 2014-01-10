@@ -1,4 +1,5 @@
 # Copyright (C) 2014 Joao Carreira
+import httplib
 
 import os
 from os import listdir
@@ -61,7 +62,7 @@ def download():
     raw_input("Press any key to continue...")
     os.system("clear")
 
-    return menu ()
+    return menu()
 
 
 def upload(repo, token):
@@ -78,7 +79,7 @@ def upload(repo, token):
 
     for apk_path in apk_cache:
         apk_path = apk_path.strip()
-        apk_name = apk_path.replace("apks/", "", 1)
+        #apk_name = apk_path.replace("apks/", "", 1)
         fields = {
                 "token": token,
                 "repo": repo,
@@ -88,10 +89,15 @@ def upload(repo, token):
         webservice = "https://www.aptoide.com/webservices/uploadAppToRepo"
         register_openers()
         datagen, headers = multipart_encode(fields)
-        request = urllib2.Request(webservice, datagen, headers)
-        response = urllib2.urlopen(request).read()
-        print(response)
-        os.remove(apk_path)
+
+        try:
+            request = urllib2.Request(webservice, datagen, headers)
+            response = urllib2.urlopen(request).read()
+            print(response)
+            os.remove(apk_path)
+
+        except httplib.BadStatusLine:
+            print("Got BadStatusLine from Aptoide upload.")
 
     apk_cache.close()
     os.remove('apk_cache')
