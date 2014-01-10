@@ -1,4 +1,4 @@
-#!/usr/bin/python
+# Copyright (C) 2014 João Carreira
 
 import os
 from os import listdir
