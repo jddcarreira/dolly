@@ -28,7 +28,7 @@ def clean():
 
 def download():
     total = 0
-    store = raw_input ("Insert store name: ")
+    store = raw_input("Insert store name: ")
     store_xml = "http://" + store + ".store.aptoide.com/info.xml"
 
     for f in listdir("."):
@@ -37,10 +37,10 @@ def download():
 
     urllib.urlretrieve(store_xml, "info.xml")
     print ("info.xml - Downloaded")
-    tree = ET.parse ('info.xml')
+    tree = ET.parse('info.xml')
     root = tree.getroot()
-    repository = root.findall ('repository')
-    basePath = repository[0].find ('basepath').text
+    repository = root.findall('repository')
+    base_path = repository[0].find('basepath').text
 
     for package in root.findall('package'):
         apk_path = package.find('path').text
@@ -48,7 +48,7 @@ def download():
         print ("Downloading: " + apk_path)
 
         try:
-            urllib.urlretrieve(basePath + apk_path, apks_downloaded)
+            urllib.urlretrieve(base_path + apk_path, apks_downloaded)
             print ("Download Successful")
             total += 1
 
