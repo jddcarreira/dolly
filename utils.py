@@ -1,4 +1,4 @@
-# Copyright (C) 2014 João Carreira
+# Copyright (C) 2014 Joao Carreira
 
 import os
 from os import listdir
