@@ -1,7 +1,9 @@
 #!/usr/bin/python
 
-import xml.etree.ElementTree as ET
 import os
+from os import listdir
+import xml.etree.ElementTree as ET
+import shutil
 import filecmp
 import urllib
 import urllib2
@@ -9,9 +11,16 @@ from poster.encode import multipart_encode
 from poster.streaminghttp import register_openers
 
 def clean ():
-	os.system('rm -rf apks/* apk_cache *.xml')
-	os.system('mkdir apks')
-	print ("Cache - Clear")
+	try:
+		os.remove('info.xml')
+		os.remove('apk_cache')
+		shutil.rmtree('apks')
+		os.makedirs("apks")
+		print("Cache: Cleared | Apks folder created")
+
+	except OSError:
+		os.makedirs("apks")
+		print("Cache: Cleared | Apks folder created")
 
 	return menu ()
 
@@ -19,7 +28,11 @@ def download ():
 	total = 0
 	store = raw_input ("Insert store name: ")
 	store_xml = "http://" + store + ".store.aptoide.com/info.xml"
-	os.system('rm *.xml')
+
+	for f in listdir("."):
+		if f.endswith(".xml"):
+			os.remove(f)
+
 	urllib.urlretrieve(store_xml, "info.xml")
 	print ("info.xml - Downloaded")
 	tree = ET.parse ('info.xml')
@@ -31,13 +44,16 @@ def download ():
 		apk_path = package.find('path').text
 		apks_downloaded = "apks/" + apk_path
 		print ("Downloading: " + apk_path)
+
 		try:
 			urllib.urlretrieve(basePath + apk_path, apks_downloaded)
 			print ("Download Successful")
 			total += 1
+
 		except IOError:
 			print("Download Failed")
 
+	os.remove("info.xml")
 	total = str(total)
 	print ("Total of Downloaded Files: " + total)
 	raw_input("Press any key to continue...")
@@ -46,24 +62,36 @@ def download ():
 	return menu ()
 
 def upload (repo, token):
-	os.system('rm apk_cache')
-	os.system("ls apks/*.apk > apk_cache")
+	try:
+		os.remove('apk_cache')
+		os.system("ls apks/*.apk > apk_cache")
+		apk_cache = open("apk_cache", "rw+")
+
+	except OSError:
+		os.system("ls apks/*.apk > apk_cache")
+		apk_cache = open("apk_cache", "rw+")
+
 	print ("APK Cache - Complete")
-	apk_cache = open("apk_cache", "rw+")
 	
 	for apk_path in apk_cache:
+		apk_path = apk_path.strip()
+		apk_name = apk_path.replace("apks/", "", 1)
 		fields = {
 				"token": token,
 				"repo": repo,
-				"apk": open(apk_path, "rb")
+				"apk": open(apk_path, "rb"),
+				"mode": "jason"
 				}
 		webservice = "https://www.aptoide.com/webservices/uploadAppToRepo"
 		register_openers()
 		datagen, headers = multipart_encode(fields)
 		request = urllib2.Request(webservice, datagen, headers)
-		print urllib2.urlopen(request).read()
+		response = urllib2.urlopen(request).read()
+		print(response)
+		os.remove(apk_path)
 
 	apk_cache.close()
+	os.remove('apk_cache')
 
 	return menu ()
 
