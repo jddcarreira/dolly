@@ -67,6 +67,6 @@ for package in root.findall('package'):
 
 os.remove("info.xml")
 total = str(total)
-print ("Total of Downloaded and Downloaded Files: " + total)
+print ("Total of Downloaded and Uploaded Files: " + total)
 raw_input("Press any key to continue...")
 os.system("clear")
