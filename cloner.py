@@ -128,15 +128,15 @@ def menu():
     user_input = raw_input ("Choose an option: ")
 
     if user_input == "1":
-        download ()
+        download()
     elif user_input == "2":
         user_input_store = raw_input ("Insert your store name: ")
         user_input_token = raw_input ("Insert your store token: ")
-        upload (user_input_store, user_input_token)
+        upload(user_input_store, user_input_token)
     elif user_input == "3":
         file_comparison()
     elif user_input == "9":
-        clean ()
+        clean()
     elif user_input == "0":
         exit()
     else:
